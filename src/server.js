@@ -4,6 +4,7 @@ const swagger = require('fastify-swagger');
 const fastifyJWT = require('fastify-jwt');
 
 const userRoutes = require('./routes/user/v1');
+const authRoutes = require('./routes/auth/v1');
 const config = require('./config');
 const { setConsoleMessage, setErrorResponse } = require('./lib');
 
@@ -90,6 +91,7 @@ if (cluster.isWorker || config.env.toLowerCase() === 'development') {
     });
 
     app.register(userRoutes, { prefix: '/api/v1/user' });
+    app.register(authRoutes, { prefix: '/api/v1/auth' });
 
     app.ready((err) => {
       app.swagger();
