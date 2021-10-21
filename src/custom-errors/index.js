@@ -1,12 +1,13 @@
 const InternalError = require('./InternalError');
 const RejectError = require('./RejectError');
 const RequestError = require('./RequestError');
-const AuthenticationError = require('./UnauthenticationError');
-const UnauthorizedError = require('./UnauthorizedError');
-const AccessDeniedError = require('./AccessDeniedError');
 const UserNotFoundError = require('./UserNotFoundError');
 const UserAlreadyExistError = require('./UserAlreadyExistError');
 const PasswordIncorrectError = require('./PasswordIncorrectError');
+const AuthenticationError = require('./UnauthenticationError');
+const UnauthorizedError = require('./UnauthorizedError');
+const AccessDeniedError = require('./AccessDeniedError');
+const ExceedTaskCountError = require('./ExceedTaskCountError');
 
 module.exports = {
   RejectError,
@@ -18,4 +19,5 @@ module.exports = {
   UserNotFoundError,
   UserAlreadyExistError,
   PasswordIncorrectError,
+  ExceedTaskCountError,
 };
