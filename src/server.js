@@ -1,7 +1,9 @@
 const cluster = require('cluster');
 const fastify = require('fastify');
 const swagger = require('fastify-swagger');
+const fastifyJWT = require('fastify-jwt');
 
+const userRoutes = require('./routes/user/v1');
 const config = require('./config');
 const { setConsoleMessage, setErrorResponse } = require('./lib');
 
@@ -27,9 +29,9 @@ const app = fastify({
 
 if (cluster.isWorker || config.env.toLowerCase() === 'development') {
   app.addHook('onSend', (request, reply, payload, next) => {
-    // reply.header('Access-Control-Allow-Origin', '*');
-    // reply.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Cache-Control');
-    // reply.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+  //  reply.header('Access-Control-Allow-Origin', '*');
+  //  reply.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Cache-Control');
+  //  reply.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
 
     let data;
     try {
@@ -40,7 +42,7 @@ if (cluster.isWorker || config.env.toLowerCase() === 'development') {
       data = null;
     }
 
-    Object.assign(reply.res, {
+    Object.assign(reply.raw, {
       payload: data || undefined,
       input: {
         method: request.raw.method,
@@ -72,8 +74,22 @@ if (cluster.isWorker || config.env.toLowerCase() === 'development') {
 
   app.setNotFoundHandler({}, (req, res) => setErrorResponse(404, res));
 
+  app.decorate('authenticate', async (request, reply) => {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      console.log(err);
+      reply.code(401).send('');
+    }
+  });
+
   app.start = () => {
     app.register(swagger, config.documentation);
+    app.register(fastifyJWT, {
+      secret: config.keys.jwtKey,
+    });
+
+    app.register(userRoutes, { prefix: '/api/v1/user' });
 
     app.ready((err) => {
       app.swagger();
