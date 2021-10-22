@@ -11,6 +11,7 @@ const find = async (id, username) => {
 const create = async (firstname, lastname, username, password, role, dailyTaskCount) => {
   const id = uuid.v4();
 
+  // Check user is unique
   const existedUser = await find(null, username);
   if (existedUser) throw new customErrors.UserAlreadyExistError();
 
@@ -19,6 +20,7 @@ const create = async (firstname, lastname, username, password, role, dailyTaskCo
 };
 
 const remove = async (id) => {
+  // Make sure id exists and belongs to a user
   const user = await find(id);
   if (!user) throw new customErrors.UserNotFoundError();
 

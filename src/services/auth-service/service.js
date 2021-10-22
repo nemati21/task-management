@@ -27,7 +27,7 @@ const generateToken = (user, expiry) => {
 const implicitAuthenticate = async (username, password) => {
   let token = null;
 
-  // username and password check
+  // Check username and password
   const user = await userService.find(null, username);
   if (!user) throw new customError.UserNotFoundError();
 
@@ -47,7 +47,7 @@ const implicitAuthenticate = async (username, password) => {
 const logout = async (userId) => {
   let token = null;
 
-  // username and password check
+  // check username and password
   const user = await userService.find(userId, null);
   if (!user) throw new customError.UserNotFoundError();
 

@@ -38,7 +38,6 @@ const query = async () => {
   try {
     users = await db.collection('users').find({}).toArray();
   } catch (err) {
-    console.log(err);
     users = null;
   }
 
