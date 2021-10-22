@@ -10,6 +10,7 @@ module.exports = (fastify, options, next) => {
       tags: [swaggerTag],
       body: {
         type: 'object',
+        required: ['username', 'password'],
         properties: {
           username: schemaTypes.string,
           password: schemaTypes.string,
