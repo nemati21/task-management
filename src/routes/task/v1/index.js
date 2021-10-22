@@ -20,6 +20,7 @@ module.exports = (fastify, options, next) => {
         properties: {
           numbers: {
             type: 'array',
+            minItems: 1,
             items: schemaTypes.number,
           },
         },
@@ -48,6 +49,7 @@ module.exports = (fastify, options, next) => {
         properties: {
           numbers: {
             type: 'array',
+            minItems: 1,
             items: schemaTypes.number,
           },
         },
@@ -76,6 +78,7 @@ module.exports = (fastify, options, next) => {
         properties: {
           numbers: {
             type: 'array',
+            minItems: 1,
             items: schemaTypes.number,
           },
         },
@@ -104,6 +107,7 @@ module.exports = (fastify, options, next) => {
         properties: {
           numbers: {
             type: 'array',
+            minItems: 1,
             items: schemaTypes.number,
           },
         },
