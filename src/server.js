@@ -92,7 +92,95 @@ if (cluster.isWorker || config.env.toLowerCase() === 'development') {
     });
 
     app.register(userRoutes, { prefix: '/api/v1/user' });
-    app.register(authRoutes, { prefix: '/api/v1/auth' });
+    app.register(authRoutes, { prefix: '/api/v1' });
+    app.register(taskRoutes, { prefix: '/api/v1/tasks' });
+
+    app.ready((err) => {
+      app.swagger();
+
+      if (err) return console.log(setConsoleMessage('Cannot start fastify because of an error', 'ERROR'), err);
+      (async () => {
+        try {
+          app.listen(config.server.port, '0.0.0.0', (listenErr, address) => {
+            if (listenErr) {
+              console.log(setConsoleMessage('Cannot start server because of error:', 'ERROR'), listenErr.message);
+              throw new Error(listenErr);
+            } else {
+              console.log(setConsoleMessage(`Service is ready, listening on ${address}`, 'OK'));
+            }
+          });
+        } catch (e) {
+          process.exit(1);
+        }
+      })();
+      return true;
+    });
+  };
+}
+
+if (config.env.toLowerCase() === 'test') {
+  app.addHook('onSend', (request, reply, payload, next) => {
+  //  reply.header('Access-Control-Allow-Origin', '*');
+  //  reply.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Cache-Control');
+  //  reply.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+
+    let data;
+    try {
+      if (payload && payload.length && (payload.startsWith('{') || payload.startsWith('['))) data = JSON.parse(payload);
+      if (Array.isArray(data) && data.length > 3) data = 'bulk-data';
+      else if (payload.length > 1024) data = 'bulk-data';
+    } catch {
+      data = null;
+    }
+
+    Object.assign(reply.raw, {
+      payload: data || undefined,
+      input: {
+        method: request.raw.method,
+        url: request.raw.url,
+        query: request.query,
+        body: request.body || undefined,
+        headers: request.headers,
+      },
+    });
+
+    next();
+  });
+
+  app.setErrorHandler((err, req, res) => {
+    app.log.error({
+      request: {
+        url: req.raw.url,
+        method: req.raw.method,
+        headers: req.raw.headers,
+        body: req.body,
+        query: req.query,
+      },
+      err,
+    });
+
+    setErrorResponse(err, res);
+  });
+
+  app.setNotFoundHandler({}, (req, res) => setErrorResponse(404, res));
+
+  app.decorate('authenticate', async (request, reply) => {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      console.log(err);
+      reply.code(401).send('');
+    }
+  });
+
+  app.start = () => {
+    app.register(swagger, config.documentation);
+    app.register(fastifyJWT, {
+      secret: config.keys.jwtKey,
+    });
+
+    app.register(userRoutes, { prefix: '/api/v1/user' });
+    app.register(authRoutes, { prefix: '/api/v1' });
     app.register(taskRoutes, { prefix: '/api/v1/tasks' });
 
     app.ready((err) => {

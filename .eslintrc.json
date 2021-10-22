@@ -1,5 +1,12 @@
 {
     "extends": ["airbnb/base", "plugin:security/recommended"],
+    "globals": {
+      "before": true,
+      "beforeEach":true,
+      "describe": true,
+      "it": true,
+      "after":true
+    },
     "rules": {
       "no-console": "off",
       "max-len": "off",

@@ -20,6 +20,11 @@
 *  ***npm start***
   
 
+## Commands to run the tests 
+
+*  ***npm test***
+  
+
 ## Check project APIs in the below swagger URL
 
 *  ***http://127.0.0.1:4006/documentation/static/index.html#/***

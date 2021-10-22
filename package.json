@@ -4,7 +4,8 @@
   "description": "User Management Service",
   "main": "index.js",
   "scripts": {
-    "start": "SET NODE_ENV=development & env-cmd --file ./src/.env nodemon ./src/index.js"
+    "start": "SET NODE_ENV=development & env-cmd --file ./src/.env nodemon ./src/index.js",
+    "test": "SET NODE_ENV=test & env-cmd --file ./test/.env mocha ./test/index.*.js"
   },
   "author": "Behnaz Nemati",
   "license": "ISC",
@@ -23,6 +24,10 @@
     "eslint": "^7.5.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-security": "^1.4.0"
+    "eslint-plugin-security": "^1.4.0",
+    "expect": "1.20.2",
+    "mocha": "3.0.0",
+    "mocha-param": "^2.0.1",
+    "supertest": "2.0.0"
   }
 }
