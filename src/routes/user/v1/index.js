@@ -30,6 +30,7 @@ module.exports = (fastify, options, next) => {
           dailyTaskCount: schemaTypes.number,
           role: {
             type: 'array',
+            minItems: 1,
             items: customTypes.roleType,
           },
         },
